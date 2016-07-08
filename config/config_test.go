@@ -14,7 +14,7 @@ func TestConfig(t *testing.T) {
 	}
 	cfg := DefaultConfig()
 	for _, f := range cfgFiles {
-		t.Logf(f)
+		// t.Logf(f)
 		nCfg, err := NewConfig(f)
 		if err != nil {
 			t.Fatal(err)

@@ -1,5 +1,7 @@
 package config
 
+//
+
 import (
 	"encoding/json"
 	"errors"
@@ -12,7 +14,7 @@ import (
 	// "strings"
 	// "fmt"
 	"github.com/BurntSushi/toml"
-	// "github.com/expleto/expleto/utils"
+	"github.com/expleto/expleto/utils"
 	"gopkg.in/yaml.v2"
 )
 
@@ -47,10 +49,9 @@ func NewConfig(path string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	// fmt.Println(path)
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return nil, utils.FormatError(err)
 	}
 
 	cfg := &Config{}
@@ -58,17 +59,17 @@ func NewConfig(path string) (*Config, error) {
 	case ".json":
 		jerr := json.Unmarshal(data, cfg)
 		if jerr != nil {
-			return nil, jerr
+			return nil, utils.FormatError(jerr)
 		}
 	case ".toml":
 		_, terr := toml.Decode(string(data), cfg)
 		if terr != nil {
-			return nil, terr
+			return nil, utils.FormatError(terr)
 		}
 	case ".yml":
 		yerr := yaml.Unmarshal(data, cfg)
 		if yerr != nil {
-			return nil, yerr
+			return nil, utils.FormatError(yerr)
 		}
 
 	default:
