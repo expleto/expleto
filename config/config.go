@@ -5,7 +5,7 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	// "fmt"
+	"fmt"
 	// "io/ioutil"
 	// "os"
 	"path/filepath"
@@ -45,31 +45,31 @@ func DefaultConfig() *Config {
 //	* .yml     - is decoded as yaml
 //	* .toml    - is decoded as toml
 func NewConfig(path string) (*Config, error) {
+	var err error
 	data, err := utils.GetDataFromFile(path)
 	if err != nil {
 		return nil, utils.FormatError(err)
 	}
 
 	cfg := &Config{}
+	// err = nil
 	switch filepath.Ext(path) {
+
 	case ".json":
-		jerr := json.Unmarshal(data, cfg)
-		if jerr != nil {
-			return nil, utils.FormatError(jerr)
-		}
+		err = json.Unmarshal(data, cfg)
+
 	case ".toml":
-		_, terr := toml.Decode(string(data), cfg)
-		if terr != nil {
-			return nil, utils.FormatError(terr)
-		}
+		_, err = toml.Decode(string(data), cfg)
+
 	case ".yml":
-		yerr := yaml.Unmarshal(data, cfg)
-		if yerr != nil {
-			return nil, utils.FormatError(yerr)
-		}
+		err = yaml.Unmarshal(data, cfg)
 
 	default:
-		return nil, errors.New("expleto: The format is not supported")
+		err = errors.New("expleto: The format is not supported")
 	}
+	if err != nil {
+		return nil, fmt.Errorf("Can't parse %s: %v", path, err)
+	}
+
 	return cfg, nil
 }
