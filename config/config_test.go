@@ -7,6 +7,7 @@ import (
 )
 
 func TestConfig(t *testing.T) {
+	// right files
 	cfgFiles := []string{
 		"fixtures/config/app.json",
 		"fixtures/config/app.yml",
@@ -14,13 +15,12 @@ func TestConfig(t *testing.T) {
 	}
 	cfg := DefaultConfig()
 	for _, f := range cfgFiles {
-		// t.Logf(f)
 		nCfg, err := NewConfig(f)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if nCfg.AppName != cfg.AppName {
-			t.Errorf("expecetd %s got %s", cfg.AppName, nCfg.AppName)
+			t.Errorf("expected %s got %s", cfg.AppName, nCfg.AppName)
 		}
 	}
 
