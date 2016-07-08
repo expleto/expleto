@@ -1,8 +1,8 @@
 package config
 
 import (
-	"os"
-	"path/filepath"
+	// "os"
+	// "path/filepath"
 	"testing"
 )
 
@@ -12,20 +12,15 @@ func TestConfig(t *testing.T) {
 		"fixtures/config/app.yml",
 		"fixtures/config/app.toml",
 	}
-
 	cfg := DefaultConfig()
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf(dir)
 	for _, f := range cfgFiles {
+		t.Logf(f)
 		nCfg, err := NewConfig(f)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if nCfg.AppName != cfg.AppName {
-			t.Errorf("expected %s got %s", cfg.AppName, nCfg.AppName)
+			t.Errorf("expecetd %s got %s", cfg.AppName, nCfg.AppName)
 		}
 	}
 

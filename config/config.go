@@ -10,7 +10,9 @@ import (
 	// "reflect"
 	// "strconv"
 	// "strings"
+	// "fmt"
 	"github.com/BurntSushi/toml"
+	// "github.com/expleto/expleto/utils"
 	"gopkg.in/yaml.v2"
 )
 
@@ -45,7 +47,7 @@ func NewConfig(path string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	// fmt.Println(path)
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -70,7 +72,7 @@ func NewConfig(path string) (*Config, error) {
 		}
 
 	default:
-		return nil, errors.New("utron: config file format not supported")
+		return nil, errors.New("expleto: The format is not supported")
 	}
 	return cfg, nil
 }
