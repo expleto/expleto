@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"errors"
 	// "fmt"
-	"io/ioutil"
-	"os"
+	// "io/ioutil"
+	// "os"
 	"path/filepath"
 	// "reflect"
 	// "strconv"
@@ -45,11 +45,7 @@ func DefaultConfig() *Config {
 //	* .yml     - is decoded as yaml
 //	* .toml    - is decoded as toml
 func NewConfig(path string) (*Config, error) {
-	_, err := os.Stat(path)
-	if err != nil {
-		return nil, err
-	}
-	data, err := ioutil.ReadFile(path)
+	data, err := utils.GetDataFromFile(path)
 	if err != nil {
 		return nil, utils.FormatError(err)
 	}

@@ -5,6 +5,7 @@ import (
 	// "encoding/xml"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"runtime"
 	// "strconv"
@@ -28,4 +29,5 @@ func GetDataFromFile(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	return data, nil
 }
