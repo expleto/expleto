@@ -1,8 +1,9 @@
 package expleto
 
 import (
-	// "os"
-	// "path/filepath"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -41,14 +42,22 @@ func TestDefaultConfig(t *testing.T) {
 
 func TestConfig(t *testing.T) {
 	// right files
-	cfgFiles := []string{
-		"fixtures/config/app.json",
-		"fixtures/config/app.yml",
-		"fixtures/config/app.toml",
+	// cfgFiles := []string{
+	// 	"fixtures/config/app.json",
+	// 	"fixtures/config/app.yml",
+	// 	"fixtures/config/app.toml",
+	// }
+	good_store_prefix := "./fixtures/config/good"
+
+	cfgFiles, _ := ioutil.ReadDir(good_store_prefix)
+	if len(cfgFiles) < 1 {
+		t.Fatalf("Failed because you should have a test cases")
 	}
 	cfg := DefaultConfig()
 	for _, f := range cfgFiles {
-		nCfg, err := NewConfig(f)
+		file_path, _ := filepath.Abs(good_store_prefix + "/" + f.Name())
+		// t.Log(file_path)
+		nCfg, err := NewConfig(file_path)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -64,6 +73,23 @@ func TestConfig(t *testing.T) {
 	}
 	for _, f := range nonexist_cfgFiles {
 		_, err := NewConfig(f)
+		if err == nil {
+			t.Fatal("There wasn't raise an error")
+		}
+
+	}
+	// wrong syntax
+	bad_store_prefix := "./fixtures/config/bad"
+	bad_cfgFiles, _ := ioutil.ReadDir(bad_store_prefix)
+	if len(bad_cfgFiles) < 1 {
+		t.Fatalf("Failed because you should have a test cases")
+	}
+	for _, f := range bad_cfgFiles {
+		file_path, _ := filepath.Abs(bad_store_prefix + "/" + f.Name())
+		if _, err := os.Stat(file_path); os.IsNotExist(err) {
+			t.Fatal("Can't find the bad config file " + file_path)
+		}
+		_, err := NewConfig(file_path)
 		if err == nil {
 			t.Fatal("There wasn't raise an error")
 		}
