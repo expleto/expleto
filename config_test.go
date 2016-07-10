@@ -1,4 +1,4 @@
-package config
+package expleto
 
 import (
 	// "os"

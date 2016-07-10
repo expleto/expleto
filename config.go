@@ -1,4 +1,4 @@
-package config
+package expleto
 
 //
 
@@ -14,7 +14,6 @@ import (
 	// "strings"
 	// "fmt"
 	"github.com/BurntSushi/toml"
-	"github.com/expleto/expleto/utils"
 	"gopkg.in/yaml.v2"
 )
 
@@ -46,9 +45,9 @@ func DefaultConfig() *Config {
 //	* .toml    - is decoded as toml
 func NewConfig(path string) (*Config, error) {
 	var err error
-	data, err := utils.GetDataFromFile(path)
+	data, err := GetDataFromFile(path)
 	if err != nil {
-		return nil, utils.FormatError(err)
+		return nil, FormatError(err)
 	}
 
 	cfg := &Config{}

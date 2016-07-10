@@ -1,4 +1,4 @@
-package utils
+package expleto
 
 import (
 	// "bytes"
@@ -20,6 +20,7 @@ func FormatError(err error) error {
 	return fmt.Errorf("%v\nTRACE: %s[%s:%d]", err, runtime.FuncForPC(pc).Name(), filepath.Base(fn), line)
 }
 
+// read data from file
 func GetDataFromFile(path string) ([]byte, error) {
 	_, err := os.Stat(path)
 	if err != nil {
