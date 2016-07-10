@@ -119,3 +119,61 @@ func TestConfig(t *testing.T) {
 
 	}
 }
+
+func TestConfigEnv(t *testing.T) {
+	fields := []struct {
+		name, env, value string
+	}{
+		{"AppName", "APP_NAME", "expleto"},
+		{"BaseURL", "BASE_URL", "http://localhost:9000"},
+		{"Port", "PORT", "9000"},
+		{"ViewsDir", "VIEWS_DIR", "viewTest"},
+		{"StaticDir", "STATIC_DIR", "statics"},
+	}
+	for _, f := range fields {
+
+		// check out env name maker
+		cm := getEnvName(f.name)
+		if cm != f.env {
+			t.Errorf("expected %s got %s", f.env, cm)
+		}
+	}
+
+	// set environment values
+	for _, f := range fields {
+		_ = os.Setenv(f.env, f.value)
+	}
+
+	cfg := DefaultConfig()
+	if err := cfg.Sync(); err != nil {
+		t.Errorf("Can't syncing env %v", err)
+	}
+
+	if cfg.Port != 9000 {
+		t.Errorf("expected 9000 got %d instead", cfg.Port)
+	}
+
+	if cfg.AppName != "expleto" {
+		t.Errorf("expected utron got %s", cfg.AppName)
+	}
+}
+
+func TestGetEnvName(t *testing.T) {
+	fixtures := []struct {
+		name, env string
+	}{
+		{"AppName", "APP_NAME"},
+		{"BaseURL", "BASE_URL"},
+		{"Port", "PORT"},
+		{"ViewsDir", "VIEWS_DIR"},
+		{"StaticDir", "STATIC_DIR"},
+	}
+	for _, tt := range fixtures {
+		result := getEnvName(tt.name)
+		if result != tt.env {
+			t.Fatal("Expected " + tt.env + " but got " + result)
+
+		}
+	}
+
+}
