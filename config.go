@@ -102,13 +102,13 @@ func (c *Config) Sync() error {
 		case reflect.Int:
 			v, err := strconv.Atoi(env)
 			if err != nil {
-				return fmt.Errorf("utron: loading config field %s %v", field.Name, err)
+				return fmt.Errorf("expleto: loading config field %s %v", field.Name, err)
 			}
 			cfg.FieldByName(field.Name).Set(reflect.ValueOf(v))
 		case reflect.Bool:
 			b, err := strconv.ParseBool(env)
 			if err != nil {
-				return fmt.Errorf("utron: loading config field %s %v", field.Name, err)
+				return fmt.Errorf("expleto: loading config field %s %v", field.Name, err)
 			}
 			cfg.FieldByName(field.Name).SetBool(b)
 		}
