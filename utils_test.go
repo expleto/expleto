@@ -8,13 +8,56 @@ import (
 	// "path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
-func func_name(string) ([]byte, error) {
-
-	return nil, errors.New("Can't read ")
-
+type FileInfo struct {
+	name    string
+	size    int64
+	mode    os.FileMode
+	modtime time.Time
+	isdir   bool
+	sys     interface{}
 }
+
+func New(name string, size int64, mode os.FileMode, modtime time.Time, isdir bool,
+	sys interface{}) (fi os.FileInfo) {
+
+	fi = &FileInfo{
+		name:    name,
+		size:    size,
+		mode:    mode,
+		modtime: modtime,
+		isdir:   isdir,
+		sys:     sys,
+	}
+	return
+}
+
+func (fi FileInfo) Name() string {
+	return fi.name
+}
+
+func (fi FileInfo) Size() int64 {
+	return fi.size
+}
+
+func (fi FileInfo) Mode() os.FileMode {
+	return fi.mode
+}
+
+func (fi FileInfo) ModTime() time.Time {
+	return fi.modtime
+}
+
+func (fi FileInfo) IsDir() bool {
+	return fi.isdir
+}
+
+func (fi FileInfo) Sys() interface{} {
+	return fi.sys
+}
+
 func TestGetDataFromFile(t *testing.T) {
 	// non exists files
 	nonexist_cfgFiles := []string{
@@ -47,6 +90,7 @@ func TestGetDataFromFile(t *testing.T) {
 }
 
 func TestMockGetDataFromFile(t *testing.T) {
+	// bad
 	stat := func(filename string) (os.FileInfo, error) {
 		return nil, errors.New("err msg")
 	}
@@ -61,6 +105,26 @@ func TestMockGetDataFromFile(t *testing.T) {
 	if _, err := getDataFromFile("foo"); err.Error() != "err msg" {
 		t.Error("expected an error to be thrown")
 	}
+
+}
+
+func TestMockGetDataFromFileG(t *testing.T) {
+
+	//good
+	stat_ok := func(filename string) (os.FileInfo, error) {
+		fi := New("file.txt", int64(123), os.ModeType, time.Now(), true, nil)
+		return fi, nil
+	}
+	readfile := func(filename string) ([]byte, error) {
+
+		return nil, errors.New("err msg")
+	}
+	getDataFromFile := getDataFromFileFactory(stat_ok, readfile)
+
+	if _, err := getDataFromFile("foo"); err.Error() != "err msg" {
+		t.Error("expected an error to be thrown")
+	}
+
 }
 func TestFormatError(t *testing.T) {
 	err := errors.New("test 1")
