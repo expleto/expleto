@@ -17,6 +17,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const (
+	ERROR_FORMAT_NOT_SUPPORTED = "expleto: The format is not supported"
+)
+
 // Config stores configurations values
 type Config struct {
 	AppName   string `json:"app_name" yaml:"app_name" toml:"app_name"`
@@ -64,7 +68,7 @@ func NewConfig(path string) (*Config, error) {
 		err = yaml.Unmarshal(data, cfg)
 
 	default:
-		err = errors.New("expleto: The format is not supported")
+		err = errors.New(ERROR_FORMAT_NOT_SUPPORTED)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("Can't parse %s: %v", path, err)

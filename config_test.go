@@ -1,6 +1,8 @@
 package expleto
 
 import (
+	// "errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -92,6 +94,27 @@ func TestConfig(t *testing.T) {
 		_, err := NewConfig(file_path)
 		if err == nil {
 			t.Fatal("There wasn't raise an error")
+		}
+
+	}
+
+	// wrong format
+	wrong_store_prefix := "./fixtures/config/wrong_format"
+	wrong_cfgFiles, _ := ioutil.ReadDir(wrong_store_prefix)
+	if len(wrong_cfgFiles) < 1 {
+		t.Fatalf("Failed because you should have a test cases")
+	}
+	for _, f := range wrong_cfgFiles {
+		file_path, _ := filepath.Abs(wrong_store_prefix + "/" + f.Name())
+		if _, err := os.Stat(file_path); os.IsNotExist(err) {
+			t.Fatal("Can't find the wrong config file " + file_path)
+		}
+		_, err := NewConfig(file_path)
+		if err == nil {
+			t.Fatal("There wasn't raise an error")
+		}
+		if fmt.Sprintf("%v", err) != fmt.Sprintf("%v", fmt.Errorf("Can't parse %s: %v", file_path, ERROR_FORMAT_NOT_SUPPORTED)) {
+			t.Fatal("Raised unexpected error %v", err)
 		}
 
 	}
