@@ -56,5 +56,17 @@ func TestConfig(t *testing.T) {
 			t.Errorf("expected %s got %s", cfg.AppName, nCfg.AppName)
 		}
 	}
+	// non-exist files
+	nonexist_cfgFiles := []string{
+		"fixtures/nonexist/config/app.json",
+		"fixtures/nonexist/config/app.yml",
+		"fixtures/nonexist/config/app.toml",
+	}
+	for _, f := range nonexist_cfgFiles {
+		_, err := NewConfig(f)
+		if err == nil {
+			t.Fatal("There wasn't raise an error")
+		}
 
+	}
 }
