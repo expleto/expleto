@@ -167,6 +167,7 @@ func TestGetEnvName(t *testing.T) {
 		{"Port", "PORT"},
 		{"ViewsDir", "VIEWS_DIR"},
 		{"StaticDir", "STATIC_DIR"},
+		{"", ""},
 	}
 	for _, tt := range fixtures {
 		result := getEnvName(tt.name)
