@@ -7,13 +7,14 @@ import (
 	"errors"
 	"fmt"
 	// "io/ioutil"
-	// "os"
+	"os"
 	"path/filepath"
-	// "reflect"
-	// "strconv"
-	// "strings"
+	"reflect"
+	"strconv"
+	"strings"
 	// "fmt"
 	"github.com/BurntSushi/toml"
+	"github.com/fatih/camelcase"
 	"gopkg.in/yaml.v2"
 )
 
@@ -75,4 +76,61 @@ func NewConfig(path string) (*Config, error) {
 	}
 
 	return cfg, nil
+}
+
+// overrides c field's values that are set in the environment.
+// The environment variable names are derived from config fields by underscoring, and uppercasing
+// the name. E.g. AppName will have a corresponding environment variable APP_NAME
+//
+// NOTE only int, string and bool fields are supported and the corresponding values are set.
+// when the field value is not supported it is ignored.
+func (c *Config) Sync() error {
+	cfg := reflect.ValueOf(c).Elem()
+	cTyp := cfg.Type()
+
+	for k := range make([]struct{}, cTyp.NumField()) {
+		field := cTyp.Field(k)
+
+		cm := getEnvName(field.Name)
+		env := os.Getenv(cm)
+		if env == "" {
+			continue
+		}
+		switch field.Type.Kind() {
+		case reflect.String:
+			cfg.FieldByName(field.Name).SetString(env)
+		case reflect.Int:
+			v, err := strconv.Atoi(env)
+			if err != nil {
+				return fmt.Errorf("utron: loading config field %s %v", field.Name, err)
+			}
+			cfg.FieldByName(field.Name).Set(reflect.ValueOf(v))
+		case reflect.Bool:
+			b, err := strconv.ParseBool(env)
+			if err != nil {
+				return fmt.Errorf("utron: loading config field %s %v", field.Name, err)
+			}
+			cfg.FieldByName(field.Name).SetBool(b)
+		}
+
+	}
+	return nil
+}
+
+// returns all upper case and underscore separated string, from field.
+// field is a camel case string.
+//
+// example
+//	AppName will change to APP_NAME
+func getEnvName(field string) string {
+	camSplit := camelcase.Split(field)
+	var rst string
+	for k, v := range camSplit {
+		if k == 0 {
+			rst = strings.ToUpper(v)
+			continue
+		}
+		rst = rst + "_" + strings.ToUpper(v)
+	}
+	return rst
 }
