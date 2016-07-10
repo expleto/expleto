@@ -45,3 +45,14 @@ func TestGetDataFromFile(t *testing.T) {
 	}
 
 }
+
+func TestFormatError(t *testing.T) {
+	err := errors.New("test 1")
+	err1 := FormatError(err)
+	err_str := fmt.Sprintf("%v", err)
+
+	err1_str := fmt.Sprintf("%v", err1)
+	if err_str == err1_str {
+		t.Fatal("err1_str: " + err1_str + " == err_str " + err_str)
+	}
+}
