@@ -6,6 +6,39 @@ import (
 	"testing"
 )
 
+func TestDefaultConfig(t *testing.T) {
+	cfg := DefaultConfig()
+	var fixtures = struct {
+		AppName   string
+		BaseURL   string
+		Port      int
+		Verbose   bool
+		StaticDir string
+		ViewsDir  string
+	}{
+		"expleto web app", "http://localhost:9000", 9000, false, "static", "views",
+	}
+
+	if cfg.AppName != fixtures.AppName {
+		t.Fatal("cfg.AppName != fixtures.AppName")
+	}
+	if cfg.BaseURL != fixtures.BaseURL {
+		t.Fatal("cfg.BaseURL != fixtures.BaseURL")
+	}
+	if cfg.Port != fixtures.Port {
+		t.Fatal("cfg.Port != fixtures.Port")
+	}
+	if cfg.Verbose != fixtures.Verbose {
+		t.Fatal("cfg.Verbose != fixtures.Verbose")
+	}
+	if cfg.StaticDir != fixtures.StaticDir {
+		t.Fatal("cfg.StaticDir != fixtures.StaticDir")
+	}
+	if cfg.ViewsDir != fixtures.ViewsDir {
+		t.Fatal("cfg.ViewsDir != fixtures.ViewsDir")
+	}
+}
+
 func TestConfig(t *testing.T) {
 	// right files
 	cfgFiles := []string{
