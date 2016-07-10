@@ -46,6 +46,22 @@ func TestGetDataFromFile(t *testing.T) {
 
 }
 
+func TestMockGetDataFromFile(t *testing.T) {
+	stat := func(filename string) (os.FileInfo, error) {
+		return nil, errors.New("err msg")
+	}
+
+	readfile := func(filename string) ([]byte, error) {
+		t.Error("should not call this function")
+		return nil, nil
+	}
+
+	getDataFromFile := getDataFromFileFactory(stat, readfile)
+
+	if _, err := getDataFromFile("foo"); err.Error() != "err msg" {
+		t.Error("expected an error to be thrown")
+	}
+}
 func TestFormatError(t *testing.T) {
 	err := errors.New("test 1")
 	err1 := FormatError(err)
