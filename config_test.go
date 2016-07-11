@@ -174,7 +174,37 @@ func TestConfigEnvEmpty(t *testing.T) {
 	if cfg.Port != 9000 {
 		t.Errorf("expected 9000 got %d instead", cfg.Port)
 	}
+}
 
+func TestConfigEnvWrong(t *testing.T) {
+	fields := []struct {
+		name, env, value string
+	}{
+		{"AppName", "APP_NAME", "2"},
+		{"BaseURL", "BASE_URL", "http://localhost:9000"},
+		{"Port", "PORT", "--- 9009"},
+		{"ViewsDir", "VIEWS_DIR", "viewTest"},
+		{"StaticDir", "STATIC_DIR", "statics"},
+		{"Verbose", "VERBOSE", "true"},
+	}
+	for _, f := range fields {
+
+		// check out env name maker
+		cm := getEnvName(f.name)
+		if cm != f.env {
+			t.Errorf("expected %s got %s", f.env, cm)
+		}
+	}
+
+	// set environment values
+	for _, f := range fields {
+		_ = os.Setenv(f.env, f.value)
+	}
+
+	cfg := DefaultConfig()
+	if err := cfg.Sync(); err != nil {
+		t.Errorf("Can't syncing env %v", err)
+	}
 }
 
 func TestGetEnvName(t *testing.T) {
