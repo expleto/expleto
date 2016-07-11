@@ -178,33 +178,27 @@ func TestConfigEnvEmpty(t *testing.T) {
 
 func TestConfigEnvWrong(t *testing.T) {
 	fields := []struct {
-		name, env, value string
+		name, env, value, error_msg string
 	}{
-		{"AppName", "APP_NAME", "2"},
-		{"BaseURL", "BASE_URL", "http://localhost:9000"},
-		{"Port", "PORT", "--- 9009"},
-		{"ViewsDir", "VIEWS_DIR", "viewTest"},
-		{"StaticDir", "STATIC_DIR", "statics"},
-		{"Verbose", "VERBOSE", "true"},
+		{"Port", "PORT", "--- 9009", fmt.Sprintf("expleto: loading config field %s %v", "Port", "strconv.ParseInt: parsing \"--- 9009\": invalid syntax")},
+		{"Verbose", "VERBOSE", "true2", fmt.Sprintf("expleto: loading config field %s %v", "Verbose", "strconv.ParseBool: parsing \"true2\": invalid syntax")},
 	}
 	for _, f := range fields {
+		os.Clearenv()
 
-		// check out env name maker
 		cm := getEnvName(f.name)
 		if cm != f.env {
 			t.Errorf("expected %s got %s", f.env, cm)
 		}
+
+		os.Setenv(f.env, f.value)
+		cfg := DefaultConfig()
+		if err := cfg.Sync(); err.Error() != f.error_msg {
+
+			t.Errorf("Got %v but expected %v", err, f.error_msg)
+		}
 	}
 
-	// set environment values
-	for _, f := range fields {
-		_ = os.Setenv(f.env, f.value)
-	}
-
-	cfg := DefaultConfig()
-	if err := cfg.Sync(); err != nil {
-		t.Errorf("Can't syncing env %v", err)
-	}
 }
 
 func TestGetEnvName(t *testing.T) {
