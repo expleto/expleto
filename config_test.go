@@ -198,7 +198,6 @@ func TestConfigEnvWrong(t *testing.T) {
 			t.Errorf("Got %v but expected %v", err, f.error_msg)
 		}
 	}
-
 }
 
 func TestGetEnvName(t *testing.T) {

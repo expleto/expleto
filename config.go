@@ -98,18 +98,24 @@ func (c *Config) Sync() error {
 		}
 		switch field.Type.Kind() {
 		case reflect.String:
+			// https://golang.org/pkg/reflect/#Value.SetString
+			// SetString sets v's underlying value to x. It panics if v's Kind is not String or if CanSet() is false.
 			cfg.FieldByName(field.Name).SetString(env)
 		case reflect.Int:
 			v, err := strconv.Atoi(env)
 			if err != nil {
 				return fmt.Errorf("expleto: loading config field %s %v", field.Name, err)
 			}
+			// https://golang.org/pkg/reflect/#Value.Set
+			// Set assigns x to the value v. It panics if CanSet returns false. As in Go, x's value must be assignable to v's type.
 			cfg.FieldByName(field.Name).Set(reflect.ValueOf(v))
 		case reflect.Bool:
 			b, err := strconv.ParseBool(env)
 			if err != nil {
 				return fmt.Errorf("expleto: loading config field %s %v", field.Name, err)
 			}
+			// https://golang.org/pkg/reflect/#Value.Bool
+			// Bool returns v's underlying value. It panics if v's kind is not Bool.
 			cfg.FieldByName(field.Name).SetBool(b)
 		}
 
