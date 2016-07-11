@@ -121,12 +121,13 @@ func TestConfig(t *testing.T) {
 }
 
 func TestConfigEnv(t *testing.T) {
+	os.Clearenv()
 	fields := []struct {
 		name, env, value string
 	}{
 		{"AppName", "APP_NAME", "expleto"},
 		{"BaseURL", "BASE_URL", "http://localhost:9000"},
-		{"Port", "PORT", "9000"},
+		{"Port", "PORT", "9009"},
 		{"ViewsDir", "VIEWS_DIR", "viewTest"},
 		{"StaticDir", "STATIC_DIR", "statics"},
 		{"Verbose", "VERBOSE", "true"},
@@ -150,7 +151,7 @@ func TestConfigEnv(t *testing.T) {
 		t.Errorf("Can't syncing env %v", err)
 	}
 
-	if cfg.Port != 9000 {
+	if cfg.Port != 9009 {
 		t.Errorf("expected 9000 got %d instead", cfg.Port)
 	}
 
@@ -160,6 +161,20 @@ func TestConfigEnv(t *testing.T) {
 	if cfg.AppName != "expleto" {
 		t.Errorf("expected expleto got %s", cfg.AppName)
 	}
+}
+
+func TestConfigEnvEmpty(t *testing.T) {
+
+	os.Clearenv()
+	cfg := DefaultConfig()
+	if err := cfg.Sync(); err != nil {
+		t.Errorf("Can't syncing env %v", err)
+	}
+
+	if cfg.Port != 9000 {
+		t.Errorf("expected 9000 got %d instead", cfg.Port)
+	}
+
 }
 
 func TestGetEnvName(t *testing.T) {
