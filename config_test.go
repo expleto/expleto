@@ -129,6 +129,7 @@ func TestConfigEnv(t *testing.T) {
 		{"Port", "PORT", "9000"},
 		{"ViewsDir", "VIEWS_DIR", "viewTest"},
 		{"StaticDir", "STATIC_DIR", "statics"},
+		{"Verbose", "VERBOSE", "true"},
 	}
 	for _, f := range fields {
 
@@ -153,8 +154,11 @@ func TestConfigEnv(t *testing.T) {
 		t.Errorf("expected 9000 got %d instead", cfg.Port)
 	}
 
+	if cfg.Verbose != true {
+		t.Errorf("expected expleto got %s", cfg.Verbose)
+	}
 	if cfg.AppName != "expleto" {
-		t.Errorf("expected utron got %s", cfg.AppName)
+		t.Errorf("expected expleto got %s", cfg.AppName)
 	}
 }
 
