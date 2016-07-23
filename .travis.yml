@@ -2,8 +2,8 @@ language: go
 go: 
  - 1.5
  - 1.6
+ - tip
 
- - release
 before_install:
  - go get -t -v
  - go get github.com/axw/gocov/gocov
